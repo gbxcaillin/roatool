@@ -36563,7 +36563,7 @@ function runs(text, o = {}) {
 const P = (t, o = {}) => new Paragraph({ children: runs(t, o), spacing: { after: o.after ?? 120, line: 288 }, alignment: o.align, keepNext: o.keepNext });
 const H1 = t => new Paragraph({ heading: HeadingLevel.HEADING_1, children: [new TextRun({ text: t, font: FONT })] });
 const H2 = t => new Paragraph({ heading: HeadingLevel.HEADING_2, children: [new TextRun({ text: t, font: FONT })] });
-const B = (t, lvl = 0) => new Paragraph({ numbering: { reference: 'bul', level: lvl }, children: runs(t), spacing: { after: 80, line: 276 } });
+const B = (t, lvl = 0, o = {}) => new Paragraph({ numbering: { reference: 'bul', level: lvl }, children: runs(t), spacing: { after: 80, line: 276 }, keepNext: o.keepNext });
 const note = t => (DATA && DATA.hideNotes) ? new Paragraph({ spacing: { after: 0 }, children: [] }) : new Paragraph({ children: runs(t, { size: 17, italics: true, color: '555555' }), spacing: { after: 120 } });
 
 const border = { style: BorderStyle.SINGLE, size: 4, color: MID };
@@ -36677,7 +36677,6 @@ const holdRows = DATA ? [...DATA.rows, ['Total', '', DATA.totals[0], '100%', DAT
   ['Total', '', '{{TOTAL_CURRENT}}', '100%', '{{TOTAL_NEW}}', '100%', '{{TOTAL_CHANGE}}'],
 ];
 const s6 = [
-  pb(),
   H1('6. Your portfolio: now and after the change'),
   P('The table shows your account’s current investments, the updated {{MODEL_NAME}} model weights applied to your balance, and the buying and selling needed to get there.'),
   table([2500, 800, 1250, 1000, 1250, 1000, 1838], ['Investment', 'Action', 'Current $', 'Current %', 'New $', 'New %', 'Change $'], holdRows, { boldLast: true, right: [2, 3, 4, 5, 6] }),
@@ -36753,19 +36752,19 @@ const s10 = [
 ];
 
 const s11 = [
-  new Paragraph({ heading: HeadingLevel.HEADING_1, pageBreakBefore: true, children: [new TextRun({ text: '11. What happens next', font: FONT })] }),
+  H1('11. What happens next'),
   B('If you have any questions or concerns, please talk to us before you accept this advice.'),
   B('If you are comfortable with it and want us to go ahead, sign the Authority to Proceed below and return it to us. Or tell us in writing or by email that you accept.'),
   B('We will then make the changes to your account, and send you confirmation once they are done.'),
   B('If you do not want to go ahead, you do not need to do anything. Your account stays as it is.'),
   gap(),
   H2('Authority to proceed'),
-  P('I acknowledge that:'),
-  B('I have read, understood and kept a copy of this Record of Advice dated {{ROA_DATE}}, and my Statement of Advice dated {{SOA_DATE}}.'),
-  B('My personal circumstances and objectives have not significantly changed since that Statement of Advice.'),
-  B('I understand the risks and costs set out in this Record of Advice.'),
-  B('I have been given, or told where to find, the Product Disclosure Statements for the investments in this Record of Advice.'),
-  P('I authorise {{ADVISER_NAME}} of Wealth 23 Dealer Group Services to make the changes to my {{PLATFORM}} account that are set out in this Record of Advice.', { after: 240 }),
+  P('I acknowledge that:', { keepNext: true }),
+  B('I have read, understood and kept a copy of this Record of Advice dated {{ROA_DATE}}, and my Statement of Advice dated {{SOA_DATE}}.', 0, { keepNext: true }),
+  B('My personal circumstances and objectives have not significantly changed since that Statement of Advice.', 0, { keepNext: true }),
+  B('I understand the risks and costs set out in this Record of Advice.', 0, { keepNext: true }),
+  B('I have been given, or told where to find, the Product Disclosure Statements for the investments in this Record of Advice.', 0, { keepNext: true }),
+  P('I authorise {{ADVISER_NAME}} of Wealth 23 Dealer Group Services to make the changes to my {{PLATFORM}} account that are set out in this Record of Advice.', { after: 240, keepNext: true }),
   table([3600, 3400, 2638], ['Name', 'Signature', 'Date'], [['{{CLIENT_FULL_NAME}}', '', '']]),
   gap(),
   ...(DATA ? [] : [note('A second signature block is needed for joint holders if any account has two owners (none expected in the Panorama batch; confirm).')]),
