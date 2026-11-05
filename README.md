@@ -2,6 +2,8 @@
 
 Drop in one workbook, get one Word Record of Advice (ROA) per client in a zip. It runs entirely in the browser: no client data is uploaded or stored anywhere.
 
+> The live page is served from `index.html` at the repo root (a build of `src/`). After changing anything in `src/`, run `npm run build && cp dist/index.html index.html` and commit it. If Pages is switched to Source: GitHub Actions, the workflow builds it automatically and `index.html` can be deleted.
+
 ## Using it
 1. Open the published page (GitHub Pages) or `dist/index.html` after `npm run build`.
 2. Drop in the ROA workbook (`W23_ROA_Client_Details_Rebalance_SOA.xlsx`). It needs the sheets **ROA Client Details**, **Rebalance list** and **Current Holdings**. A Panorama holdings CSV is optional and overrides the workbook holdings.
