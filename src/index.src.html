@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wealth 23 ROA Generator</title>
+<style>
+:root{--navy:#233C5B;--red:#D7191F;--bg:#F5F7FA;--card:#fff;--line:#D0D5DD;--ink:#1D2433;--mut:#5B6577;--ok:#12703F;--warn:#8A5A00;--warnbg:#FFF4D6;--badbg:#FDE2E2;--bad:#A11A1A;--infobg:#E8EEF7}
+@media (prefers-color-scheme:dark){:root{--bg:#10151D;--card:#171E29;--line:#2D384A;--ink:#E6EAF2;--mut:#9AA6BA;--ok:#5FD39A;--warn:#F2C35B;--warnbg:#3A2F10;--badbg:#3C1A1A;--bad:#FF8E8E;--infobg:#1F2B40}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 Arial,Helvetica,sans-serif}
+header{background:var(--navy);color:#fff;display:flex;align-items:center;gap:16px;padding:10px 24px}header img{height:56px;border-radius:4px}header h1{font-size:18px;margin:0}header p{margin:2px 0 0;color:#C9D3E3;font-size:12px}
+main{max-width:1180px;margin:0 auto;padding:20px 16px 60px}
+section{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin-bottom:16px}
+h2{font-size:15px;margin:0 0 4px;color:var(--navy)}@media (prefers-color-scheme:dark){h2{color:#9DB7E0}}
+.sub{color:var(--mut);font-size:12px}.hint{color:var(--mut);margin:0 0 12px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:760px){.grid{grid-template-columns:1fr}}
+.drop{display:block;border:2px dashed var(--line);border-radius:10px;padding:16px;text-align:center;cursor:pointer;background:var(--bg)}.drop:hover{border-color:var(--navy)}
+.drop input{display:none}.drop b{display:block;margin-bottom:2px}.ok{color:var(--ok)}.err{color:var(--bad);font-weight:bold}
+#hmsg,#cmsg{display:block;margin-top:6px;min-height:18px;font-size:12px}
+details summary{cursor:pointer;color:var(--navy);font-weight:bold}@media (prefers-color-scheme:dark){details summary{color:#9DB7E0}}
+.set{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;margin-top:10px}label{display:flex;flex-direction:column;font-size:12px;color:var(--mut);gap:3px}
+input[type=text],input[type=number],input[type=date],input:not([type]),select{font:inherit;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink)}
+label.chk{flex-direction:row;align-items:center;gap:6px;color:var(--ink)}
+.bar{display:flex;gap:12px;align-items:center;margin:10px 0;flex-wrap:wrap}.bar input[type=search]{flex:1;min-width:200px;font:inherit;padding:7px 10px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink)}
+.wrap{max-height:520px;overflow:auto;border:1px solid var(--line);border-radius:8px}
+table{border-collapse:collapse;width:100%;font-size:13px}th{position:sticky;top:0;background:var(--navy);color:#fff;text-align:left;padding:7px 8px;font-size:12px;z-index:1}
+td{border-top:1px solid var(--line);padding:6px 8px;vertical-align:top}.r{text-align:right;font-variant-numeric:tabular-nums}tr.blocked{opacity:.6}.fl{min-width:230px}
+.tag{display:inline-block;font-size:11px;border-radius:4px;padding:1px 6px;margin:1px 2px 1px 0}.warn{background:var(--warnbg);color:var(--warn)}.bad{background:var(--badbg);color:var(--bad)}.info{background:var(--infobg);color:var(--ink)}
+button{font:inherit;font-weight:bold;background:var(--red);color:#fff;border:0;border-radius:8px;padding:10px 20px;cursor:pointer}button:disabled{opacity:.4;cursor:default}
+.prog{height:8px;background:var(--line);border-radius:4px;overflow:hidden;margin-top:10px}.prog div{height:100%;width:0;background:var(--navy)}
+</style>
+</head>
+<body>
+<header><img alt="Wealth 23 Dealer Group Services" src="data:image/jpeg;base64,__LOGO__"><div><h1>ROA Generator</h1><p>Rebalance Records of Advice for BT Panorama model clients. Everything runs in your browser; no client data is uploaded anywhere.</p></div></header>
+<main>
+<section>
+  <h2>1. Load your files</h2>
+  <p class="hint">Drop in the ROA workbook (W23_ROA_Client_Details_Rebalance_SOA.xlsx). It holds the client details, recommended models and current holdings, so that is all you need. A Panorama holdings CSV is optional and overrides the holdings in the workbook.</p>
+  <div class="grid">
+    <label class="drop"><b>Panorama holdings CSV (optional)</b><span class="sub">Only if you have a newer Client Holdings report. Select both advisers’ files together.</span><input id="hfile" type="file" accept=".csv" multiple><span id="hmsg"></span></label>
+    <label class="drop"><b>ROA workbook</b><span class="sub">Needs the “ROA Client Details”, “Rebalance list” and “Current Holdings” sheets.</span><input id="cfile" type="file" accept=".xlsx"><span id="cmsg"></span></label>
+  </div>
+</section>
+<section id="settings">
+  <details><summary>2. Settings (defaults are set from the PDS and your instructions)</summary>
+    <div class="set">
+      <label>ROA date<input id="roaDate" type="date"></label>
+      <label>Minimum trade ($)<input id="minTrade" type="number"></label>
+      <label>Brokerage (% of listed trade)<input id="brPct" type="number" step="0.01"></label>
+      <label>Brokerage minimum ($ per trade)<input id="brMin" type="number" step="0.01"></label>
+      <label>Ongoing advice fee (% incl. GST)<input id="ongPct" type="number" step="0.01"></label>
+      <label>Ongoing fee cap ($ a year)<input id="ongCap" type="number"></label>
+      <span id="arBox" style="display:contents"></span>
+      <label class="chk"><input type="checkbox" id="notes" checked> Include compliance review notes</label>
+      <label class="chk"><input type="checkbox" id="draft" checked> Mark documents as DRAFT</label>
+    </div>
+  </details>
+</section>
+<section id="review" hidden>
+  <h2>3. Review and choose accounts</h2>
+  <p class="hint">Each client is moved to the recommended model on the Rebalance list tab (any adviser override applies). Their platform portfolio is their risk profile. Check the flags, change a model if needed, untick anyone you want to leave out.</p>
+  <div class="bar"><input type="search" id="q" placeholder="Search name, account, adviser or model"><label class="chk"><input type="checkbox" id="all" checked> Select all</label><span id="count" class="sub"></span></div>
+  <div class="wrap"><table><thead><tr><th></th><th>Client</th><th>Adviser</th><th class="r">Balance</th><th>Model</th><th class="r">Trades</th><th class="r">Est. costs</th><th>SOA date</th><th>Check before issuing</th></tr></thead><tbody id="rows"></tbody></table></div>
+</section>
+<section id="gen">
+  <h2>4. Create the ROAs</h2>
+  <p class="hint">Creates one Word file per client, named “First Last ROA”, plus a batch summary spreadsheet, in one zip saved to your Downloads folder. Upload the files to Google Drive and open them with Google Docs.</p>
+  <button id="go" disabled>Create ROAs</button>
+  <div class="prog" id="bar" hidden><div></div></div><p id="status" class="sub"></p>
+</section>
+</main>
+<script>window.LOGO_B64="__LOGO__";</script>
+<script>__JSZIP__</script>
+<script>__XLSX__</script>
+<script>__DOCX__</script>
+<script>__CALC__</script>
+<script>__CORE__</script>
+<script>__APP__</script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+node_modules/
+dist/
+*.xlsx
+*.xls
+*.csv
+*.zip
+*.docx
+*.pdf
+out/
+.DS_Store
