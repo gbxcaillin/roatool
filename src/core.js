@@ -69,6 +69,12 @@ const cover = [
   pb(),
 ];
 
+const execSum = DATA && DATA.exec ? [
+  H1('Summary of our advice'),
+  table([2300, 7338], null, DATA.exec, { shadeFirst: true }),
+  gap(200),
+] : [];
+
 const s1 = [
   H1('1. About this Record of Advice'),
   P('Dear {{CLIENT_FIRST_NAME}},'),
@@ -103,7 +109,7 @@ const s3 = [
   P('We agreed with you that your risk profile is **{{RISK_PROFILE}}**. Your account is invested in the Wealth 23 {{MODEL_NAME}} model portfolio, which matches that profile, and the advice in this ROA keeps you in it.'),
   P('{{RISK_PROFILE_DESCRIPTION}}'),
   P('The updated model keeps roughly {{MODEL_GROWTH_PCT}} of the portfolio in growth assets and {{MODEL_DEFENSIVE_PCT}} in defensive assets.'),
-  note('Appendix B holds the standard description for each profile. Growth/defensive splits come from the Investment Committee model workbook; see the compliance note on the covering message about how these compare with the SoA profile table.'),
+  note('Growth/defensive splits come from the Investment Committee model workbook; compliance to note how these compare with the SoA risk profile table (SoA shows Growth 70/30 and High Growth 90/10).'),
 ];
 
 const s4 = [
@@ -225,50 +231,6 @@ const s11 = [
   ...(DATA ? [] : [note('A second signature block is needed for joint holders if any account has two owners (none expected in the Panorama batch; confirm).')]),
 ];
 
-// Appendix A – model weights
-const models = [
-  ['OPS1827AU', 'Tacking Point Equity Income Fund (formerly Vertium), Class A', 'Australian shares', 5, 0, 10, 10],
-  ['AYLD', 'Global X S&P/ASX 200 Covered Call ETF', 'Australian shares', 5, 10, 0, 0],
-  ['QOZ', 'Betashares Australia 200 Fundamental Value ETF', 'Australian shares', 10, 10, 10, 10],
-  ['EX20', 'Betashares Australian Ex-20 Portfolio Diversifier ETF', 'Australian shares', 5, 5, 7, 8],
-  ['VAP', 'Vanguard Australian Property Securities ETF', 'Australian shares', 4, 4, 5, 5],
-  ['IVV', 'iShares S&P 500 ETF', 'International shares', 6, 6, 13, 26],
-  ['IHVV', 'iShares S&P 500 (AUD Hedged) ETF', 'International shares', 8, 8, 9, 0],
-  ['HYGG', 'Hyperion Global Growth Companies (Managed Fund)', 'International shares', 6, 6, 8, 10],
-  ['VEQ', 'Vanguard FTSE Europe Shares ETF', 'International shares', 7, 7, 11, 14],
-  ['IXJ', 'iShares Global Healthcare ETF', 'International shares', 4, 4, 5, 7],
-  ['NDQ', 'Betashares NASDAQ 100 ETF', 'International shares', 0, 0, 0, 5],
-  ['GOVT', 'SPDR S&P/ASX iBoxx Australian Government Bond ETF', 'Defensive', 11, 11, 5, 0],
-  ['IHCB', 'iShares Core Global Corporate Bond (AUD Hedged) ETF', 'Defensive', 4, 4, 2, 0],
-  ['SUBD', 'VanEck Australian Subordinated Debt ETF', 'Defensive', 5, 5, 4, 0],
-  ['IHHY', 'iShares Global High Yield Bond (AUD Hedged) ETF', 'Defensive', 10, 10, 6, 0],
-  ['ISEC', 'iShares Enhanced Cash ETF', 'Defensive', 8, 8, 3, 3],
-  ['CASH', 'Platform cash', 'Defensive', 2, 2, 2, 2],
-];
-const mrows = models.map(m => [m[0], m[1], m[2], m[3] + '%', m[4] + '%', m[5] + '%', m[6] + '%']);
-mrows.push(['', 'Total', '', '100%', '100%', '100%', '100%']);
-mrows.push(['', 'Growth assets (committee basis)', '', '60%', '60%', '78%', '95%']);
-mrows.push(['', 'Defensive assets', '', '40%', '40%', '22%', '5%']);
-
-const appA = [
-  new Paragraph({ heading: HeadingLevel.HEADING_1, pageBreakBefore: true, children: [new TextRun({ text: 'Appendix A: Updated model weights (BT Panorama)', font: FONT })] }),
-  P('Wealth 23 model portfolios after the Investment Committee rebalance on 4 November 2026. Your account is rebalanced to the column for your model.'),
-  table([1300, 2850, 1388, 1025, 1025, 1025, 1025], ['Code', 'Investment', 'Sector', 'Balanced under 60', 'Balanced 60+', 'Growth', 'High Growth'], mrows, { right: [3, 4, 5, 6] }),
-  gap(),
-  note('The investments being sold in full are FANG, SEMI, ETHI, MVB and VHY. Tacking Point/AYLD is counted as growth; IHHY and SUBD are counted as defensive. DASH Super Simplifier uses AYLD in place of the Tacking Point Equity Income Fund until DASH approves it, so DASH clients will need a separate version of this table.'),
-];
-
-const appB = [
-  H1('Appendix B: Risk profile descriptions'),
-  table([2000, 7638], ['Profile', 'Description'], [
-    ['Balanced', 'Using a slightly higher exposure to growth assets than income assets, this portfolio is expected to have lower short-term fluctuations in value than the other growth-based investment portfolios. Its aim is to produce capital growth in a medium- to long-term time frame. It has a "balanced" exposure to shares, property and fixed income assets'],
-    ['Growth', 'A growth-oriented portfolio that is best suited to long-term investors. A small income exposure should slightly reduce the shorter-term fluctuations of the portfolio’s value. It is best suited to a long-term investor who can accept some investment risk over the long run. The portfolio has a high exposure to shares and property to provide long-term investment growth.'],
-    ['High Growth', 'A growth-based portfolio with minimal exposure to income assets. It has a strong emphasis on maximising capital growth over the long term. Investors should expect high short-term fluctuations in values and a higher chance of capital loss. However, they are prepared to accept this to achieve their long-term investment objective.'],
-  ], { shadeFirst: true }),
-  gap(),
-  note('Wording adapted from the Risk Profile section of the current Wealth 23 SoA. Tax references have been removed from the descriptions, in line with this ROA not covering tax.'),
-];
-
 // ---- document ----
 const doc = new Document({
   creator: 'Wealth 23 Dealer Group Services',
@@ -291,7 +253,7 @@ const doc = new Document({
       default: new Footer({ children: [new Paragraph({ tabStops: [{ type: TabStopType.RIGHT, position: W }], children: [new TextRun({ text: 'AFSL 548844  |  ABN 17 667 026 780', font: FONT, size: 16, color: '555555' }), new TextRun({ children: ['\tPage ', PageNumber.CURRENT, ' of ', PageNumber.TOTAL_PAGES], font: FONT, size: 16, color: '555555' })] })] }),
       first: new Footer({ children: [new Paragraph({ children: [] })] }),
     },
-    children: [...cover, ...s1, ...s2, ...s3, ...s4, ...s5, ...s6, ...s7, ...s8, ...s9, ...s10, ...s11, ...appA, ...appB],
+    children: [...cover, ...execSum, ...s1, ...s2, ...s3, ...s4, ...s5, ...s6, ...s7, ...s8, ...s9, ...s10, ...s11],
   }],
 });
 

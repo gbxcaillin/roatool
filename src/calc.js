@@ -186,9 +186,19 @@ function buildDocData(a, calc, s) {
   const pf = k => (PDS[k] ? [PDS[k].date, PDS[k].url] : ['Current PDS', 'On the issuer’s website, or from us on request']);
   const pds = [['BT Panorama Super (PDS and guide)', ...pf('PLATFORM')]].concat(
     newCodes.map(c => [`${HOLDINGS[c].name} (${c})`, ...pf(c)]));
+  const sells = calc.rows.filter(r => r.act === 'Sell' || r.act === 'Sell all'), sellAll = calc.rows.filter(r => r.act === 'Sell all'), buys = calc.rows.filter(r => r.act === 'Buy');
+  const bankDown = calc.bankN < calc.bankC - 0.005;
+  const exec = [
+    ['Our advice', `Stay in the Wealth 23 ${modelLabel(model)} model portfolio, which matches your ${prof} risk profile, and rebalance your ${v.PLATFORM} account to the model’s updated weights.`],
+    ['The rebalance', `${calc.trades} trades: ${sells.length} sell${sells.length === 1 ? '' : 's'}${sellAll.length ? ' (' + sellAll.length + ' sold in full)' : ''} and ${buys.length} buy${buys.length === 1 ? '' : 's'}. The details are in section 6.`],
+    ['Less risk and exposure', `Your risk profile does not change. The rebalance reduces ${bankDown ? 'your exposure to Australian banks (from ' + pct(calc.bankC) + ' to ' + pct(calc.bankN) + ') and ' : ''}the concentration in US technology and overlapping share investments${prof !== 'High Growth' ? ', and moves from high-yield and subordinated debt towards government bonds, corporate bonds and enhanced cash' : ''}.`],
+    ['Why we are doing it', 'The Wealth 23 Investment Committee reviewed the models on 4 November 2026. It concluded that the next three to six months call for a safer approach that protects recent gains.'],
+    ['What it costs', `Estimated buying and selling costs of ${money(calc.total)} (${pct(calc.bal ? calc.total / calc.bal : 0, 2)} of your balance). These are costs of investing, paid from your super, and are not our fee. There is no new advice fee, and your ongoing advice fee does not change.`],
+    ['What to do next', 'If you would like more information, please contact us. Otherwise, sign the Authority to Proceed in section 11 and return it to us.'],
+  ];
   const smallHolds = calc.rows.filter(r => r.act === 'Hold').map(r => r.name);
   return {
-    v, rows, totals: [money(calc.bal), money(calc.bal)], pds,
+    v, rows, exec, totals: [money(calc.bal), money(calc.bal)], pds,
     cover_note: s.draft ? 'DRAFT for review – not approved for issue to the client. The italic notes under each section are for compliance and will be removed from client copies.' : '',
     hideNotes: !s.showNotes,
     threshold_note: `Trades under ${money(s.minTrade)} are not made${smallHolds.length ? ' (' + smallHolds.length + ' holding' + (smallHolds.length > 1 ? 's' : '') + ' stay' + (smallHolds.length > 1 ? '' : 's') + ' as they are)' : ''}, so cash and any holdings left as they are differ slightly from the model weights.`,
