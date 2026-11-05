@@ -36373,6 +36373,18 @@ const PROFILE_TEXT = {
   'Growth': 'A growth-oriented portfolio that is best suited to long-term investors. A small income exposure should slightly reduce the shorter-term fluctuations of the portfolio’s value. It is best suited to a long-term investor who can accept some investment risk over the long run. The portfolio has a high exposure to shares and property to provide long-term investment growth.',
   'High Growth': 'A growth-based portfolio with minimal exposure to income assets. It has a strong emphasis on maximising capital growth over the long term. Investors should expect high short-term fluctuations in values and a higher chance of capital loss. However, they are prepared to accept this to achieve their long-term investment objective.',
 };
+// Product disclosure statements (supplied by Wealth 23, 5 Nov 2026). Codes not listed fall back to "Current PDS".
+const PDS = {
+  PLATFORM: { date: '20 September 2026', url: 'https://www.bt.com.au/content/dam/public/btfg-bt/documents/legacy/download/panorama/documents/Panorama-Super-PDS.pdf' },
+  OPS1827AU: { date: '7 September 2026', url: 'https://tpam.capital/downloads/NzU2fDA.5155f73ff86610174485' },
+  QOZ: { date: '18 September 2026', url: 'https://www.betashares.com.au/files/collateral/pds/QOZ-pds.pdf' },
+  EX20: { date: '18 September 2026', url: 'https://www.betashares.com.au/files/collateral/pds/QOZ-pds.pdf' },
+  IHVV: { date: '5 November 2026', url: 'https://www.blackrock.com/au/literature/product-disclosure-statement/ishares-international-equity-etfs-product-disclosure-statement-en-au.pdf' },
+  VEQ: { date: '1 September 2026', url: 'https://fund-docs.vanguard.com/AU-ETFPDS-Vanguard_FTSE_Europe_Shares_ETF-VEQ.pdf' },
+  GOVT: { date: '13 February 2026', url: 'https://www.ssga.com/au/en_gb/intermediary/library-content/products/fund-docs/etfs/apac/au/pds/product-disclosure-statement-au-en-bond.pdf' },
+  IHCB: { date: '24 September 2026', url: 'https://www.blackrock.com/au/literature/product-disclosure-statement/ishares-international-fixed-income-etfs-product-disclosure-statement-en-au.pdf' },
+  ISEC: { date: '24 September 2026', url: 'https://www.blackrock.com/au/literature/product-disclosure-statement/ishares-australian-fixed-income-and-cash-etfs-product-disclosure-statement-en-au.pdf' },
+};
 const DEFAULTS = { minTrade: 500, brokeragePct: 0.11, brokerageMin: 12.5, ongoingPct: 1.65, ongoingCap: 9000,
   ar: { 'Clifford Samson': '465553', 'Sabrina Siew Siew Teo': '1314740' } };
 
@@ -36497,8 +36509,9 @@ function buildDocData(a, calc, s) {
   };
   const rows = calc.rows.map(r => [`${r.name} (${r.code})`, r.act, money(r.cur), pct(r.cur / calc.bal), money(r.nw), pct(r.nw / calc.bal), r.act === 'Hold' ? '–' : (r.d > 0 ? '+' : '') + money(r.d)]);
   const newCodes = calc.rows.filter(r => r.cur === 0 && r.nw > 0 && r.code !== 'CASH').map(r => r.code);
-  const pds = [['BT Panorama Super (PDS and guide)', '1 July 2026', 'From us on request, or at btpanorama.com.au']].concat(
-    newCodes.map(c => [`${HOLDINGS[c].name} (${c})`, 'Current PDS', 'On the issuer’s website, or from us on request']));
+  const pf = k => (PDS[k] ? [PDS[k].date, PDS[k].url] : ['Current PDS', 'On the issuer’s website, or from us on request']);
+  const pds = [['BT Panorama Super (PDS and guide)', ...pf('PLATFORM')]].concat(
+    newCodes.map(c => [`${HOLDINGS[c].name} (${c})`, ...pf(c)]));
   const smallHolds = calc.rows.filter(r => r.act === 'Hold').map(r => r.name);
   return {
     v, rows, totals: [money(calc.bal), money(calc.bal)], pds,
@@ -36506,18 +36519,18 @@ function buildDocData(a, calc, s) {
     hideNotes: !s.showNotes,
     threshold_note: `Trades under ${money(s.minTrade)} are not made${smallHolds.length ? ' (' + smallHolds.length + ' holding' + (smallHolds.length > 1 ? 's' : '') + ' stay' + (smallHolds.length > 1 ? '' : 's') + ' as they are)' : ''}, so cash and any holdings left as they are differ slightly from the model weights.`,
     s4_bullets: changeBullets(model), risk_bullet: riskBullet(model), new_invest_bullet: newInvestBullet(model),
-    cost_note: `Costs shown are brokerage on listed securities (${s.brokeragePct}% of the trade, minimum ${money2(s.brokerageMin)}, under the BT Panorama Super PDS dated 1 July 2026) ${MODELS[model].OPS1827AU ? 'and the 0.25% spread on buying the Tacking Point Equity Income Fund' : 'only, because your model does not buy the Tacking Point Equity Income Fund'}. Panorama charges no buy/sell spread of its own and no fee on managed fund trades. The normal market bid/ask spread on ETFs and any spread charged by other managed funds are not included. Actual costs depend on prices and spreads when the trades are made.`,
+    cost_note: `Costs shown are brokerage on listed securities (${s.brokeragePct}% of the trade, minimum ${money2(s.brokerageMin)}, under the BT Panorama Super PDS dated ${PDS.PLATFORM.date}) ${MODELS[model].OPS1827AU ? 'and the 0.25% spread on buying the Tacking Point Equity Income Fund' : 'only, because your model does not buy the Tacking Point Equity Income Fund'}. Panorama charges no buy/sell spread of its own and no fee on managed fund trades. The normal market bid/ask spread on ETFs and any spread charged by other managed funds are not included. Actual costs depend on prices and spreads when the trades are made.`,
   };
 }
 
-const api = { profileOf, modelLabel, HOLDINGS, ORDER, MODELS, OLD_MODELS, GROWTH_PCT, PROFILE_TEXT, DEFAULTS, money, money2, pct, longDate, MONTHS, codeOf, computeAccount, buildDocData };
+const api = { PDS, profileOf, modelLabel, HOLDINGS, ORDER, MODELS, OLD_MODELS, GROWTH_PCT, PROFILE_TEXT, DEFAULTS, money, money2, pct, longDate, MONTHS, codeOf, computeAccount, buildDocData };
 if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.W23 = api;
 })(typeof window !== 'undefined' ? window : globalThis);
 </script>
 <script>(function (root) {
 function buildDoc(DATA, logo, docx) {
 const { Document, Packer, Paragraph, TextRun, ImageRun, Table, TableRow, TableCell, WidthType, ShadingType,
-  AlignmentType, BorderStyle, LevelFormat, Header, Footer, PageNumber, HeadingLevel, PageBreak, TabStopType } = docx;
+  AlignmentType, BorderStyle, LevelFormat, Header, Footer, PageNumber, HeadingLevel, PageBreak, TabStopType, ExternalHyperlink } = docx;
 
 const NAVY = '233C5B', RED = 'D7191F', GREY = 'F2F4F7', MID = 'D0D5DD';
 const W = 9638; // content width (A4, 1134 margins)
@@ -36550,7 +36563,9 @@ function cell(t, w, o = {}) {
     shading: o.fill ? { fill: o.fill, type: ShadingType.CLEAR, color: 'auto' } : undefined,
     margins: { top: 70, bottom: 70, left: 100, right: 100 },
     columnSpan: o.span,
-    children: [new Paragraph({ alignment: o.align, children: runs(t, { size: o.size || 18, bold: o.bold, color: o.color }) })],
+    children: [new Paragraph({ alignment: o.align, children: /^https?:\/\/\S+$/.test(t)
+      ? [new ExternalHyperlink({ link: t, children: [new TextRun({ text: t, font: FONT, size: 14, color: '0563C1', underline: {} })] })]
+      : runs(t, { size: o.size || 18, bold: o.bold, color: o.color }) })],
   });
 }
 function table(widths, header, rows, o = {}) {

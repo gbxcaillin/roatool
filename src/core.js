@@ -1,7 +1,7 @@
 (function (root) {
 function buildDoc(DATA, logo, docx) {
 const { Document, Packer, Paragraph, TextRun, ImageRun, Table, TableRow, TableCell, WidthType, ShadingType,
-  AlignmentType, BorderStyle, LevelFormat, Header, Footer, PageNumber, HeadingLevel, PageBreak, TabStopType } = docx;
+  AlignmentType, BorderStyle, LevelFormat, Header, Footer, PageNumber, HeadingLevel, PageBreak, TabStopType, ExternalHyperlink } = docx;
 
 const NAVY = '233C5B', RED = 'D7191F', GREY = 'F2F4F7', MID = 'D0D5DD';
 const W = 9638; // content width (A4, 1134 margins)
@@ -34,7 +34,9 @@ function cell(t, w, o = {}) {
     shading: o.fill ? { fill: o.fill, type: ShadingType.CLEAR, color: 'auto' } : undefined,
     margins: { top: 70, bottom: 70, left: 100, right: 100 },
     columnSpan: o.span,
-    children: [new Paragraph({ alignment: o.align, children: runs(t, { size: o.size || 18, bold: o.bold, color: o.color }) })],
+    children: [new Paragraph({ alignment: o.align, children: /^https?:\/\/\S+$/.test(t)
+      ? [new ExternalHyperlink({ link: t, children: [new TextRun({ text: t, font: FONT, size: 14, color: '0563C1', underline: {} })] })]
+      : runs(t, { size: o.size || 18, bold: o.bold, color: o.color }) })],
   });
 }
 function table(widths, header, rows, o = {}) {
