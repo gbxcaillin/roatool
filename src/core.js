@@ -148,31 +148,34 @@ const s6 = [
 
 const s7 = [
   H1('7. What it will cost you'),
-  H2('Costs of making the change'),
+  P('There are two different kinds of cost in this section. The first two parts (buying and selling costs, and ongoing investment costs) are **costs of investing**. They are **not fees charged by Wealth 23 or your adviser**, and we do not receive any of them. They are paid from your super account, so you do not need to pay anything from your own pocket. The last part (our advice fees) is the only part that is paid to us.'),
+  H2('Buying and selling costs (a cost of investing, not our fee)'),
   table([4300, 2500, 2838], ['Item', 'Estimate ($)', 'Basis'], [
     ['Brokerage on {{NUMBER_OF_TRADES}} trades', '{{BROKERAGE_TOTAL}}', '{{BROKERAGE_BASIS}}'],
     ['Buy/sell spreads', '{{SPREAD_TOTAL}}', '{{SPREAD_BASIS}}'],
     ['Total estimated transaction costs', '{{TRANSACTION_TOTAL}}', '{{TRANSACTION_PCT}} of your balance'],
   ], { boldLast: true, right: [1] }),
   gap(),
+  P('These costs are taken from your super account when the trades are made. The brokerage goes to the broker that carries out the trades, and any spread goes to the fund. They are the cost of buying and selling the investments, and they are not our fee.'),
   note(DATA ? DATA.cost_note : 'Cost note'),
-  H2('Ongoing investment costs'),
+  H2('Ongoing investment costs (a cost of investing, not our fee)'),
+  P('Every fund and ETF charges a management fee for running it. These fees are built into the investments and come out of your super, and none of them is paid to us. The table compares the fees of your current model with the updated model, so you can see how they change.'),
   table([3400, 3119, 3119], ['Weighted investment fee (p.a.)', 'Current model', 'After the change'], [
     ['Percentage', '{{CURRENT_FEE_PCT}}', '{{NEW_FEE_PCT}}'],
     ['Dollars on your balance', '{{CURRENT_FEE_DOLLARS}}', '{{NEW_FEE_DOLLARS}}'],
   ], { shadeFirst: true, right: [1, 2] }),
   gap(),
   note('Investment fees are estimates from the latest published fees (Morningstar screen 3 Nov 2026 and product disclosure statements). Platform and administration fees do not change.'),
-  H2('Our advice fees'),
+  H2('Our advice fees (the only fees paid to us)'),
   B('**No new advice fee** is charged for this ROA. {{CONFIRM_NO_UPFRONT_FEE}}'),
-  B('Your **ongoing advice fee does not change**. It continues under your existing ongoing service agreement, at {{ONGOING_FEE_PCT}} of your account balance a year ({{ONGOING_FEE_ESTIMATE}} a year on your current balance).'),
+  B('Your **ongoing advice fee does not change**. It continues under your existing ongoing service agreement, at {{ONGOING_FEE_PCT}} of your account balance a year ({{ONGOING_FEE_ESTIMATE}} a year on your current balance). It is paid from your super account in the same way as it is now.'),
   note('Compliance to confirm: no upfront/implementation fee for the ROA batch, and that the existing ongoing fee consent is current for each client.'),
 ];
 
 const s8 = [
   H1('8. Risks and things to consider'),
   B('**Market risk.** The value of your investments can fall as well as rise. The updated model aims to be more cautious but it does not remove the risk of losses, and past performance is not a reliable indicator of future performance.'),
-  B('**Transaction costs and timing.** You will pay the costs in section 7, and the prices you get will depend on when the trades are made. Delays in confirming your consent can delay the changes, and markets may move in that time.'),
+  B('**Transaction costs and timing.** The costs in section 7 are taken from your super account, and the prices you get will depend on when the trades are made. Delays in confirming your consent can delay the changes, and markets may move in that time.'),
   B('**Out of the market while trades settle.** Part of your portfolio will be held as cash between selling and buying.'),
   B(DATA ? DATA.new_invest_bullet : '**Newly added investments.** {{NEW_INVESTMENTS_RISK}}'),
   B('**Concentration that remains.** The models still hold a large share in Australian shares and US shares. Australian banks and bank-related debt are reduced, not removed, so falls in the Australian banking sector would still affect you.'),
@@ -185,7 +188,7 @@ const s8 = [
 const s9 = [
   H1('9. Fees, commissions and conflicts of interest'),
   P('Section 961B of the Corporations Act 2001 (Cth) requires that our advice is in your best interests. We have made it after looking at your relevant personal circumstances, and we will take all reasonable steps, including ceasing to provide further services, to avoid any conflict of interest as soon as we become aware of one.'),
-  P('All fees payable to us are described in section 7. Wealth 23 Dealer Group Services receives the fees as licensee and keeps 10%, and the rest is paid to {{ADVISER_NAME}}. We receive no commission on the investments recommended in this ROA, and {{ADVISER_NAME}} has no vested interest in any of them.'),
+  P('Our fees are described under “Our advice fees” in section 7. The buying, selling and investment costs in section 7 are costs of investing and are not paid to us. Wealth 23 Dealer Group Services receives the fees as licensee and keeps 10%, and the rest is paid to {{ADVISER_NAME}}. We receive no commission on the investments recommended in this ROA, and {{ADVISER_NAME}} has no vested interest in any of them.'),
   P('As an authorised representative of Wealth 23 Dealer Group Services, {{ADVISER_NAME}} may receive allowable non-monetary benefits such as professional development forums and promotional material. Benefits worth more than $300 are not accepted, and a register is kept of those between $100 and $300. Wealth 23 may receive sponsorship from product providers for training and education; advisers do not receive these amounts.'),
   note('Wording taken from the current SoA template. Compliance to confirm that "no commission" is correct for each platform and product.'),
 ];

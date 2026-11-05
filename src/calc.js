@@ -179,7 +179,7 @@ function buildDocData(a, calc, s) {
     hideNotes: !s.showNotes,
     threshold_note: `Trades under ${money(s.minTrade)} are not made${smallHolds.length ? ' (' + smallHolds.length + ' holding' + (smallHolds.length > 1 ? 's' : '') + ' stay' + (smallHolds.length > 1 ? '' : 's') + ' as they are)' : ''}, so cash and any holdings left as they are differ slightly from the model weights.`,
     s4_bullets: changeBullets(model), risk_bullet: riskBullet(model), new_invest_bullet: newInvestBullet(model),
-    cost_note: `Costs shown are brokerage on listed securities (${s.brokeragePct}% of the trade, minimum ${money2(s.brokerageMin)}, under the BT Panorama Super PDS dated 1 July 2026) ${MODELS[model].OPS1827AU ? 'and the 0.25% spread on buying the Tacking Point Equity Income Fund' : 'with no managed fund purchases in your model'}. Panorama charges no buy/sell spread of its own and no fee on managed fund trades. The normal market bid/ask spread on ETFs and any spread charged by other managed funds are not included. Actual costs depend on prices and spreads when the trades are made.`,
+    cost_note: `Costs shown are brokerage on listed securities (${s.brokeragePct}% of the trade, minimum ${money2(s.brokerageMin)}, under the BT Panorama Super PDS dated 1 July 2026) ${MODELS[model].OPS1827AU ? 'and the 0.25% spread on buying the Tacking Point Equity Income Fund' : 'only, because your model does not buy the Tacking Point Equity Income Fund'}. Panorama charges no buy/sell spread of its own and no fee on managed fund trades. The normal market bid/ask spread on ETFs and any spread charged by other managed funds are not included. Actual costs depend on prices and spreads when the trades are made.`,
   };
 }
 
