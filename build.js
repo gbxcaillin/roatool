@@ -9,7 +9,8 @@ const parts = {
   DOCX: lib('docx', 'dist/index.iife.js'),
   CALC: rd('src/calc.js'), CORE: rd('src/core.js'), APP: rd('src/app.js'),
 };
-let html = rd('src/index.src.html').split('__LOGO__').join(logo);
+const build = require('child_process').execSync('git rev-parse --short HEAD').toString().trim() + ', no appendices, executive summary';
+let html = rd('src/index.src.html').split('__BUILD__').join(build).split('__LOGO__').join(logo);
 for (const [k, v] of Object.entries(parts)) {
   html = html.split(`<script>__${k}__</script>`).join('<script>' + v.replace(/<\/script/g, '<\\/script') + '</script>');
 }
